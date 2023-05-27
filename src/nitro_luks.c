@@ -15,6 +15,9 @@
 #define ERROR 1
 #define MAX_PIN_LENGTH 20
 
+#define RETRY_COUNT 3
+#define SLEEP_SECOND 5
+
 struct termios saved_attributes;
 
 int error(char const *msg)
@@ -53,8 +56,24 @@ int main(int argc, char const *argv[])
 
     // Disable debug messages
     NK_set_debug(false);
-    login_status  = NK_login_auto();
-    
+
+    for (uint8_t i_retry = 0; i_retry < RETRY_COUNT; ++i_retry)
+    {
+        login_status  = NK_login_auto();
+        if (login_status != 1)
+        {
+            fprintf(stderr, "%i No nitrokey detected.\n",i_retry);
+            if(i_retry + 1 < RETRY_COUNT)
+            {
+                sleep(SLEEP_SECOND);
+            }
+        }
+        else
+        {
+            fprintf(stderr, "%i nitrokey detected.\n",i_retry);
+            break;
+        }
+    }
     if (login_status != 1) 
     {
         return error("*** No nitrokey detected.\n");
