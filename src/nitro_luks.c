@@ -16,7 +16,7 @@
 #define MAX_PIN_LENGTH 20
 
 #define RETRY_COUNT 3
-#define SLEEP_SECOND 5
+#define SLEEP_SECOND 3
 
 struct termios saved_attributes;
 
